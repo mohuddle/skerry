@@ -1,5 +1,7 @@
 # Skerry
 
+![Skerry icon](branding/skerry-icon-vibrant.png)
+
 > A [Mobitecture](https://github.com/mohuddle) app · *apps, architected.*
 
 A small island at the camera cutout. Live activities you chose, and nothing else.
