@@ -1,6 +1,6 @@
 # Skerry
 
-![Skerry icon](branding/skerry-icon-vibrant.png)
+![Skerry icon](branding/skerry-icon-vibrant.svg)
 
 > A [Mobitecture](https://github.com/mohuddle) app · *apps, architected.*
 
