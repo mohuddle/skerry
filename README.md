@@ -1,5 +1,7 @@
 # Skerry
 
+> A [Mobitecture](https://github.com/mohuddle) app · *apps, architected.*
+
 A small island at the camera cutout. Live activities you chose, and nothing else.
 
 **Skerry** is an Android Dynamic Island–style pill that does **not** use an Accessibility service. No ads. No analytics. No crash-upload SDK. v1 has no `INTERNET` permission.
@@ -77,3 +79,6 @@ Sideload in v1. Overlay and notification access are user grants with Settings CT
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+---
+Made by [Mobitecture](https://github.com/mohuddle) · apps, architected.
