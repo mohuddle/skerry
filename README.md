@@ -10,13 +10,13 @@ A small island at the camera cutout. Live activities you chose, and nothing else
 
 Package: `io.github.mohuddle.skerry`
 
-**Progress: 1 of 12 v1 tasks.** Next is Task 2 (cutout overlay). Board: **[TASKS.md](TASKS.md)**. Design: **[DESIGN.md](DESIGN.md)**. Privacy: **[PRIVACY.md](PRIVACY.md)**.
+**Progress: 2 of 12 v1 tasks.** Next is Task 3 (foreground service). Board: **[TASKS.md](TASKS.md)**. Design: **[DESIGN.md](DESIGN.md)**. Privacy: **[PRIVACY.md](PRIVACY.md)**.
 
 | Status | Task |
 |---|---|
 | Done | 1. Gradle scaffold (no `INTERNET`, no Accessibility) |
-| Next | 2. Cutout overlay |
-| Remaining | 3. Foreground service |
+| Done | 2. Cutout overlay |
+| Next | 3. Foreground service |
 | Remaining | 4–5 App allowlist store and picker |
 | Remaining | 6–9 Watcher, stack/cycle, media play/pause, inline reply |
 | Remaining | 10–12 Charging toggle, survival Settings, device pass |

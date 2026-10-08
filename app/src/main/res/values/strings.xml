@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Skerry</string>
-    <string name="settings_empty">Nothing to configure yet.</string>
+    <string name="overlay_title">Draw over other apps</string>
+    <string name="overlay_body">Skerry draws a small pill at the camera hole. Allow the overlay permission and the pill sits on top of the launcher. Skerry does not use an Accessibility service.</string>
+    <string name="overlay_allow">Allow overlay</string>
+    <string name="overlay_granted">Overlay is on. The pill stays at the camera hole while Skerry is running.</string>
 </resources>

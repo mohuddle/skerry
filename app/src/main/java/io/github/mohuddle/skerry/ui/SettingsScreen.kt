@@ -1,8 +1,10 @@
 package io.github.mohuddle.skerry.ui
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -17,7 +19,10 @@ import io.github.mohuddle.skerry.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(
+    overlayGranted: Boolean,
+    onAllowOverlay: () -> Unit,
+) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -30,16 +35,32 @@ fun SettingsScreen() {
             )
         },
     ) { padding ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(horizontal = 24.dp, vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
-                text = stringResource(R.string.settings_empty),
+                text = stringResource(R.string.overlay_title),
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Text(
+                text = stringResource(R.string.overlay_body),
                 color = MaterialTheme.colorScheme.onBackground,
             )
+            if (overlayGranted) {
+                Text(
+                    text = stringResource(R.string.overlay_granted),
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+            } else {
+                Button(onClick = onAllowOverlay) {
+                    Text(stringResource(R.string.overlay_allow))
+                }
+            }
         }
     }
 }
