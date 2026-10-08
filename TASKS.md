@@ -2,7 +2,7 @@
 
 v1 progress for **Skerry**. Product: [DESIGN.md](DESIGN.md). Home: [README.md](README.md). Privacy: [PRIVACY.md](PRIVACY.md).
 
-**3 of 12 done. Next: Task 4.**
+**4 of 12 done. Next: Task 5.**
 
 One task per working session so a day’s token budget stays bounded. After a task’s “Done when” is true, mark it here, refresh the README progress table, commit, and push.
 
@@ -13,7 +13,7 @@ One task per working session so a day’s token budget stays bounded. After a ta
 | 1 | Gradle scaffold | Done | `assembleDebug`. No `INTERNET`. Empty Settings. |
 | 2 | Cutout overlay | Done | Static pill at `DisplayCutout`. Overlay permission deep link. Pixel 9 Pro check: window at (427, 42), 426×120, on the punch hole. |
 | 3 | Foreground service | Done | Quiet “Skerry is on”. Pixel 9 Pro: Island off and swiping the notice both remove the pill and the service. |
-| 4 | Allowlist store | Remaining | DataStore of package names + unit tests. |
+| 4 | Allowlist store | Done | DataStore of package names. Unit tests cover add, remove, and a new store reading the same file. |
 | 5 | Allowlist UI | Remaining | Installed-apps picker. Empty list = nothing shown. |
 | 6 | Notification watcher | Remaining | Listener; drop non-allowlisted packages in process. |
 | 7 | Stack + cycle | Remaining | Cap ~5. Left icon cycles. Center expands. |
