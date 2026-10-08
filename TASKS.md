@@ -2,7 +2,7 @@
 
 v1 progress for **Skerry**. Product: [DESIGN.md](DESIGN.md). Home: [README.md](README.md). Privacy: [PRIVACY.md](PRIVACY.md).
 
-**0 of 12 done. Next: Task 1.**
+**1 of 12 done. Next: Task 2.**
 
 One task per working session so a day’s token budget stays bounded. After a task’s “Done when” is true, mark it here, refresh the README progress table, commit, and push.
 
@@ -10,7 +10,7 @@ One task per working session so a day’s token budget stays bounded. After a ta
 
 | # | Task | Status | Notes |
 |---|---|---|---|
-| 1 | Gradle scaffold | Remaining | Next. No `INTERNET`. Empty Settings. |
+| 1 | Gradle scaffold | Done | `assembleDebug`. No `INTERNET`. Empty Settings. |
 | 2 | Cutout overlay | Remaining | Static pill at `DisplayCutout`. Overlay permission. |
 | 3 | Foreground service | Remaining | “Skerry is on”; overlay dies with the service. |
 | 4 | Allowlist store | Remaining | DataStore of package names + unit tests. |

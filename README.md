@@ -10,17 +10,18 @@ A small island at the camera cutout. Live activities you chose, and nothing else
 
 Package: `io.github.mohuddle.skerry`
 
-**Progress: 0 of 12 v1 tasks.** Next is Task 1 (Gradle scaffold). Board: **[TASKS.md](TASKS.md)**. Design: **[DESIGN.md](DESIGN.md)**. Privacy: **[PRIVACY.md](PRIVACY.md)**.
+**Progress: 1 of 12 v1 tasks.** Next is Task 2 (cutout overlay). Board: **[TASKS.md](TASKS.md)**. Design: **[DESIGN.md](DESIGN.md)**. Privacy: **[PRIVACY.md](PRIVACY.md)**.
 
 | Status | Task |
 |---|---|
-| Next | 1. Gradle scaffold (no `INTERNET`, no Accessibility) |
-| Remaining | 2–3 Overlay pill + foreground service |
+| Done | 1. Gradle scaffold (no `INTERNET`, no Accessibility) |
+| Next | 2. Cutout overlay |
+| Remaining | 3. Foreground service |
 | Remaining | 4–5 App allowlist store and picker |
 | Remaining | 6–9 Watcher, stack/cycle, media play/pause, inline reply |
 | Remaining | 10–12 Charging toggle, survival Settings, device pass |
 
-There is no Play listing yet. Sideload after Task 1 produces an APK.
+There is no Play listing yet. The debug APK is `app/build/outputs/apk/debug/app-debug.apk`.
 
 ---
 
@@ -46,8 +47,8 @@ Not in v1: Accessibility, cutout swipe shortcuts, screenshot-via-global-action, 
 ## How to build
 
 1. JDK 21 and an Android SDK with platform 36.
-2. Clone this repository (app code lands in Task 1).
-3. `./gradlew assembleDebug` once the scaffold exists.
+2. Clone this repository.
+3. `./gradlew assembleDebug`
 
 Pace: one task from [TASKS.md](TASKS.md) per working session.
 
