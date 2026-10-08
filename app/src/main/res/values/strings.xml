@@ -6,6 +6,12 @@
     <string name="overlay_body">Skerry draws a small pill at the camera hole. Allow the overlay permission and the pill can sit on top of the launcher. Skerry does not use an Accessibility service.</string>
     <string name="overlay_allow">Allow overlay</string>
     <string name="overlay_granted">Overlay is allowed.</string>
+    <string name="apps_title">Apps</string>
+    <string name="apps_body">Only apps you turn on can appear on the pill. With none turned on, Skerry shows nothing.</string>
+    <string name="apps_search">Search apps</string>
+    <string name="apps_loading">Loading apps…</string>
+    <string name="apps_none">No launchable apps found.</string>
+    <string name="apps_empty">No matching apps.</string>
     <string name="notification_channel">Island</string>
     <string name="notification_channel_description">Shown while the island is on</string>
     <string name="notification_title">Skerry is on</string>

@@ -10,7 +10,7 @@ A small island at the camera cutout. Live activities you chose, and nothing else
 
 Package: `io.github.mohuddle.skerry`
 
-**Progress: 4 of 12 v1 tasks.** Next is Task 5 (allowlist picker). Board: **[TASKS.md](TASKS.md)**. Design: **[DESIGN.md](DESIGN.md)**. Privacy: **[PRIVACY.md](PRIVACY.md)**.
+**Progress: 5 of 12 v1 tasks.** Next is Task 6 (notification watcher). Board: **[TASKS.md](TASKS.md)**. Design: **[DESIGN.md](DESIGN.md)**. Privacy: **[PRIVACY.md](PRIVACY.md)**.
 
 | Status | Task |
 |---|---|
@@ -18,8 +18,9 @@ Package: `io.github.mohuddle.skerry`
 | Done | 2. Cutout overlay |
 | Done | 3. Foreground service |
 | Done | 4. Allowlist store |
-| Next | 5. Allowlist picker |
-| Remaining | 6–9 Watcher, stack/cycle, media play/pause, inline reply |
+| Done | 5. Allowlist picker |
+| Next | 6. Notification watcher |
+| Remaining | 7–9 Stack/cycle, media play/pause, inline reply |
 | Remaining | 10–12 Charging toggle, survival Settings, device pass |
 
 There is no Play listing yet. The debug APK is `app/build/outputs/apk/debug/app-debug.apk`.

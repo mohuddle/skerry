@@ -15,15 +15,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import io.github.mohuddle.skerry.allowlist.LaunchableApp
+import io.github.mohuddle.skerry.allowlist.loadLaunchableApps
 import io.github.mohuddle.skerry.service.SkerryService
 import io.github.mohuddle.skerry.ui.SettingsScreen
 import io.github.mohuddle.skerry.ui.SkerryTheme
 import io.github.mohuddle.skerry.ui.overlayPermissionIntent
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
     private var overlayGranted by mutableStateOf(false)
     private var islandOn by mutableStateOf(false)
+    private var launchableApps by mutableStateOf<List<LaunchableApp>?>(null)
+    private var allowedPackages by mutableStateOf<Set<String>>(emptySet())
 
     private val requestNotifications = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
@@ -34,8 +40,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val app = application as SkerryApp
         lifecycleScope.launch {
-            (application as SkerryApp).islandRunning.collect { islandOn = it }
+            app.islandRunning.collect { islandOn = it }
+        }
+        lifecycleScope.launch {
+            app.allowlist.packages.collect { allowedPackages = it }
+        }
+        lifecycleScope.launch {
+            launchableApps = withContext(Dispatchers.Default) {
+                loadLaunchableApps(packageManager)
+            }
         }
         setContent {
             SkerryTheme {
@@ -44,6 +59,9 @@ class MainActivity : ComponentActivity() {
                     onIslandChange = ::onIslandChange,
                     overlayGranted = overlayGranted,
                     onAllowOverlay = { startActivity(overlayPermissionIntent(packageName)) },
+                    apps = launchableApps,
+                    allowedPackages = allowedPackages,
+                    onAppChange = ::onAppChange,
                 )
             }
         }
@@ -54,6 +72,13 @@ class MainActivity : ComponentActivity() {
         overlayGranted = Settings.canDrawOverlays(this)
         if ((application as SkerryApp).islandRunning.value && overlayGranted) {
             startIsland()
+        }
+    }
+
+    private fun onAppChange(packageName: String, allowed: Boolean) {
+        val store = (application as SkerryApp).allowlist
+        lifecycleScope.launch {
+            if (allowed) store.add(packageName) else store.remove(packageName)
         }
     }
 
