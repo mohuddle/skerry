@@ -17,8 +17,8 @@ private const val PILL_WIDTH_DP = 128
 private const val PILL_HEIGHT_DP = 36
 
 /**
- * Static pill added with the application context, so it outlives Settings
- * until the process dies. Task 3 moves this into a foreground service.
+ * Static pill. [io.github.mohuddle.skerry.service.SkerryService] calls [show]
+ * from onStart and [hide] from onDestroy.
  */
 class SkerryOverlay(context: Context) : ComponentCallbacks {
     private val appContext = context.applicationContext
@@ -63,7 +63,7 @@ class SkerryOverlay(context: Context) : ComponentCallbacks {
         if (view != null) show()
     }
 
-    @Suppress("DEPRECATION")
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun onLowMemory() = Unit
 
     private fun layoutParams(): WindowManager.LayoutParams {

@@ -1,7 +1,13 @@
 <resources>
     <string name="app_name">Skerry</string>
+    <string name="island_title">Island</string>
+    <string name="island_body">Shows the pill at the camera hole. Turn this off to remove the pill and the notice.</string>
     <string name="overlay_title">Draw over other apps</string>
-    <string name="overlay_body">Skerry draws a small pill at the camera hole. Allow the overlay permission and the pill sits on top of the launcher. Skerry does not use an Accessibility service.</string>
+    <string name="overlay_body">Skerry draws a small pill at the camera hole. Allow the overlay permission and the pill can sit on top of the launcher. Skerry does not use an Accessibility service.</string>
     <string name="overlay_allow">Allow overlay</string>
-    <string name="overlay_granted">Overlay is on. The pill stays at the camera hole while Skerry is running.</string>
+    <string name="overlay_granted">Overlay is allowed.</string>
+    <string name="notification_channel">Island</string>
+    <string name="notification_channel_description">Shown while the island is on</string>
+    <string name="notification_title">Skerry is on</string>
+    <string name="notification_text">The pill is at the camera hole.</string>
 </resources>
