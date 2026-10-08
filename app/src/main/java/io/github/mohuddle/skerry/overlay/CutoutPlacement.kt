@@ -54,3 +54,25 @@ fun placePillAtCutout(
         y = rawY.coerceAtLeast(0),
     )
 }
+
+data class PillTouchShift(
+    val topInset: Int,
+    val windowHeight: Int,
+)
+
+/**
+ * The status bar is a trusted overlay and takes every touch in its band,
+ * including the camera hole. Keep the window top on the hole, and push the
+ * controls to the first pixel below that band.
+ */
+fun shiftContentBelowStatusBar(
+    windowTop: Int,
+    contentHeight: Int,
+    statusBarBottom: Int,
+): PillTouchShift {
+    val topInset = (statusBarBottom - windowTop).coerceAtLeast(0)
+    return PillTouchShift(
+        topInset = topInset,
+        windowHeight = topInset + contentHeight,
+    )
+}

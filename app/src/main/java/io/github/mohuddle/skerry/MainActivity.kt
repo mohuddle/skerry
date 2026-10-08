@@ -20,6 +20,10 @@ import io.github.mohuddle.skerry.allowlist.loadLaunchableApps
 import io.github.mohuddle.skerry.service.SkerryService
 import io.github.mohuddle.skerry.ui.SettingsScreen
 import io.github.mohuddle.skerry.ui.SkerryTheme
+import io.github.mohuddle.skerry.ui.batterySettingsIntent
+import io.github.mohuddle.skerry.ui.batteryUnrestricted
+import io.github.mohuddle.skerry.ui.notificationAccessGranted
+import io.github.mohuddle.skerry.ui.notificationAccessIntent
 import io.github.mohuddle.skerry.ui.overlayPermissionIntent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,6 +31,9 @@ import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
     private var overlayGranted by mutableStateOf(false)
+    private var listenerGranted by mutableStateOf(false)
+    private var chargingOn by mutableStateOf(false)
+    private var batteryFree by mutableStateOf(false)
     private var islandOn by mutableStateOf(false)
     private var launchableApps by mutableStateOf<List<LaunchableApp>?>(null)
     private var allowedPackages by mutableStateOf<Set<String>>(emptySet())
@@ -48,6 +55,9 @@ class MainActivity : ComponentActivity() {
             app.allowlist.packages.collect { allowedPackages = it }
         }
         lifecycleScope.launch {
+            app.charging.enabled.collect { chargingOn = it }
+        }
+        lifecycleScope.launch {
             launchableApps = withContext(Dispatchers.Default) {
                 loadLaunchableApps(packageManager)
             }
@@ -59,6 +69,12 @@ class MainActivity : ComponentActivity() {
                     onIslandChange = ::onIslandChange,
                     overlayGranted = overlayGranted,
                     onAllowOverlay = { startActivity(overlayPermissionIntent(packageName)) },
+                    listenerGranted = listenerGranted,
+                    onAllowListener = { startActivity(notificationAccessIntent(this)) },
+                    chargingOn = chargingOn,
+                    onChargingChange = ::onChargingChange,
+                    batteryUnrestricted = batteryFree,
+                    onBattery = { startActivity(batterySettingsIntent()) },
                     apps = launchableApps,
                     allowedPackages = allowedPackages,
                     onAppChange = ::onAppChange,
@@ -67,12 +83,26 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+    }
+
     override fun onResume() {
         super.onResume()
         overlayGranted = Settings.canDrawOverlays(this)
-        if ((application as SkerryApp).islandRunning.value && overlayGranted) {
+        listenerGranted = notificationAccessGranted(this)
+        batteryFree = batteryUnrestricted(this)
+        val app = application as SkerryApp
+        app.refreshPill()
+        if (app.islandRunning.value && overlayGranted) {
             startIsland()
         }
+    }
+
+    private fun onChargingChange(on: Boolean) {
+        val store = (application as SkerryApp).charging
+        lifecycleScope.launch { store.setEnabled(on) }
     }
 
     private fun onAppChange(packageName: String, allowed: Boolean) {
@@ -102,5 +132,9 @@ class MainActivity : ComponentActivity() {
 
     private fun startIsland() {
         ContextCompat.startForegroundService(this, Intent(this, SkerryService::class.java))
+    }
+
+    companion object {
+        const val EXTRA_OPENED = "skerry_opened"
     }
 }

@@ -2,7 +2,7 @@
 
 v1 progress for **Skerry**. Product: [DESIGN.md](DESIGN.md). Home: [README.md](README.md). Privacy: [PRIVACY.md](PRIVACY.md).
 
-**5 of 12 done. Next: Task 6.**
+**12 of 12 done.**
 
 One task per working session so a day’s token budget stays bounded. After a task’s “Done when” is true, mark it here, refresh the README progress table, commit, and push.
 
@@ -15,13 +15,13 @@ One task per working session so a day’s token budget stays bounded. After a ta
 | 3 | Foreground service | Done | Quiet “Skerry is on”. Pixel 9 Pro: Island off and swiping the notice both remove the pill and the service. |
 | 4 | Allowlist store | Done | DataStore of package names. Unit tests cover add, remove, and a new store reading the same file. |
 | 5 | Allowlist UI | Done | Launchable apps, search, toggles. Pixel 9 Pro: Aftercast stayed on across force-stop. |
-| 6 | Notification watcher | Remaining | Listener; drop non-allowlisted packages in process. |
-| 7 | Stack + cycle | Remaining | Cap ~5. Left icon cycles. Center expands. |
-| 8 | Media + right play/pause | Remaining | Any allowlisted `MediaSession`. Right control stays media. |
-| 9 | Actions + inline reply | Remaining | Content intent; `RemoteInput` when present. |
-| 10 | Charging toggle | Remaining | Battery broadcasts; joins stack only if enabled. |
-| 11 | Survival Settings | Remaining | Battery-unrestricted CTA; hide when off; revoked grants. |
-| 12 | Device pass | Remaining | Emulator fake cutout **and** a punch-hole phone. |
+| 6 | Notification watcher | Done | Listener offers allowlisted notifications only. Pixel and emulator: an allowlisted debug notification appeared; a shell notification did not. |
+| 7 | Stack + cycle | Done | Cap 5, newest first. Left tap cycles the compact title. Center tap expands and collapses. |
+| 8 | Media + right play/pause | Done | Right control pauses and resumes an allowlisted session while a chat item is current. |
+| 9 | Actions + inline reply | Done | Body tap opens the content intent. Reply field only when `RemoteInput` is present. The reply text is not stored. |
+| 10 | Charging toggle | Done | Default off. Joins the stack when enabled and plugged in. Leaves when the toggle is off or the device is unplugged. |
+| 11 | Survival Settings | Done | Overlay revoke hides the pill and Settings explains why. Battery button opens the system page. Island off removes the pill and the service. |
+| 12 | Device pass | Done | Pixel 9 Pro and fake-cutout emulator. See the log below. |
 
 ### Later (not v1)
 
@@ -185,7 +185,22 @@ Record device, Android version, pass/fail at the bottom of this file.
 
 ## Device pass log
 
-_(Task 12 fills this in.)_
+Checked 2026-10-08. Airplane mode stayed on after the overlay and notification-access grants, including across both reboots. Test notifications were local debug posts and a Clock alarm labeled for the pass. The allowlist was cleared again afterward.
+
+| Device | Android | Result |
+|---|---|---|
+| Pixel 9 Pro (`caiman`, serial `47101FDAP004DK`), punch hole | 17 (SDK 37) | Pass |
+| Emulator `skerry_cutout` (`emulator-5556`), punch cutout `Rect(492, 0 - 610, 128)` | 15 (SDK 35) | Pass |
+
+1. Skerry and Clock were allowlisted. Left taps cycled Clock’s “Upcoming alarm” with the Skerry items. A shell notification that was not allowlisted never replaced them.
+2. Center tap expanded the current item. Tapping the body delivered the content intent on both devices (`LAUNCH_SINGLE_TOP`, result code 3).
+3. The right control paused, then resumed, an allowlisted session while the chat item stayed current. The foreground service reported `specialUse|mediaPlayback` while that session was active.
+4. A notification with `RemoteInput` showed the reply field and Send. After Send, that notification became “Reply received” / “Sent from the pill”. The reply text was not in the notification record or the app log. A notification without `RemoteInput` showed no reply field.
+5. With the toggle on and power connected, cycling reached “Charging”. Turning the toggle off removed it. Unplug, using the plug extra, removed it as well.
+6. Airplane mode stayed on for the whole pass.
+7. Island off removed the pill and the foreground service. Island on brought them back. After reboot, Island stayed off until it was started again, and the pill came back on both devices.
+
+Pill controls are drawn below the status-bar inset. The status bar covers the camera hole, so a pill that sits entirely in that band never receives the tap.
 
 ## Session prompt
 

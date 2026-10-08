@@ -41,6 +41,12 @@ fun SettingsScreen(
     onIslandChange: (Boolean) -> Unit,
     overlayGranted: Boolean,
     onAllowOverlay: () -> Unit,
+    listenerGranted: Boolean,
+    onAllowListener: () -> Unit,
+    chargingOn: Boolean,
+    onChargingChange: (Boolean) -> Unit,
+    batteryUnrestricted: Boolean,
+    onBattery: () -> Unit,
     apps: List<LaunchableApp>?,
     allowedPackages: Set<String>,
     onAppChange: (String, Boolean) -> Unit,
@@ -69,6 +75,9 @@ fun SettingsScreen(
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     IslandSwitch(islandOn = islandOn, onIslandChange = onIslandChange)
                     OverlaySection(overlayGranted = overlayGranted, onAllowOverlay = onAllowOverlay)
+                    ListenerSection(listenerGranted = listenerGranted, onAllowListener = onAllowListener)
+                    ChargingSwitch(chargingOn = chargingOn, onChargingChange = onChargingChange)
+                    BatterySection(unrestricted = batteryUnrestricted, onBattery = onBattery)
                 }
             }
             appsSection(
@@ -132,8 +141,93 @@ private fun OverlaySection(
             color = MaterialTheme.colorScheme.onBackground,
         )
     } else {
+        Text(
+            text = stringResource(R.string.overlay_revoked),
+            color = MaterialTheme.colorScheme.onBackground,
+        )
         Button(onClick = onAllowOverlay) {
             Text(stringResource(R.string.overlay_allow))
+        }
+    }
+}
+
+@Composable
+private fun ListenerSection(
+    listenerGranted: Boolean,
+    onAllowListener: () -> Unit,
+) {
+    Text(
+        text = stringResource(R.string.listener_title),
+        color = MaterialTheme.colorScheme.onBackground,
+        style = MaterialTheme.typography.titleMedium,
+    )
+    Text(
+        text = stringResource(R.string.listener_body),
+        color = MaterialTheme.colorScheme.onBackground,
+    )
+    Text(
+        text = stringResource(if (listenerGranted) R.string.listener_granted else R.string.listener_revoked),
+        color = MaterialTheme.colorScheme.onBackground,
+    )
+    if (!listenerGranted) {
+        Button(onClick = onAllowListener) {
+            Text(stringResource(R.string.listener_allow))
+        }
+    }
+}
+
+@Composable
+private fun ChargingSwitch(
+    chargingOn: Boolean,
+    onChargingChange: (Boolean) -> Unit,
+) {
+    val label = stringResource(R.string.charging_switch)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = label,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Text(
+                text = stringResource(R.string.charging_body),
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+        }
+        Switch(
+            checked = chargingOn,
+            onCheckedChange = onChargingChange,
+            modifier = Modifier.semantics { contentDescription = label },
+        )
+    }
+}
+
+@Composable
+private fun BatterySection(
+    unrestricted: Boolean,
+    onBattery: () -> Unit,
+) {
+    Text(
+        text = stringResource(R.string.battery_title),
+        color = MaterialTheme.colorScheme.onBackground,
+        style = MaterialTheme.typography.titleMedium,
+    )
+    Text(
+        text = stringResource(R.string.battery_body),
+        color = MaterialTheme.colorScheme.onBackground,
+    )
+    if (unrestricted) {
+        Text(
+            text = stringResource(R.string.battery_granted),
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+    } else {
+        Button(onClick = onBattery) {
+            Text(stringResource(R.string.battery_allow))
         }
     }
 }

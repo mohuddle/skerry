@@ -1,11 +1,26 @@
 <resources>
     <string name="app_name">Skerry</string>
     <string name="island_title">Island</string>
-    <string name="island_body">Shows the pill at the camera hole. Turn this off to remove the pill and the notice.</string>
+    <string name="island_body">When this is on, allowed live items appear at the camera hole. Turn this off to remove the pill and the notice.</string>
     <string name="overlay_title">Draw over other apps</string>
     <string name="overlay_body">Skerry draws a small pill at the camera hole. Allow the overlay permission and the pill can sit on top of the launcher. Skerry does not use an Accessibility service.</string>
     <string name="overlay_allow">Allow overlay</string>
     <string name="overlay_granted">Overlay is allowed.</string>
+    <string name="listener_title">Notification access</string>
+    <string name="listener_body">Skerry reads notifications only from apps you turn on, and only while the island is on. It does not use an Accessibility service.</string>
+    <string name="listener_allow">Allow notification access</string>
+    <string name="listener_granted">Notification access is allowed.</string>
+    <string name="listener_revoked">Notification access is off, so the pill stays hidden.</string>
+    <string name="overlay_revoked">Overlay permission is off, so the pill stays hidden.</string>
+    <string name="charging_title">Charging</string>
+    <string name="charging_switch">Show charging</string>
+    <string name="charging_body">When this is on, plugging in adds a charging item to the pill. It is not an app.</string>
+    <string name="battery_title">Battery</string>
+    <string name="battery_body">Unrestricted battery use makes it harder for the phone to freeze the pill. Skerry does not turn this on by itself.</string>
+    <string name="battery_allow">Open battery settings</string>
+    <string name="battery_granted">Battery is unrestricted.</string>
+    <string name="media_playing">Playing</string>
+    <string name="media_paused">Paused</string>
     <string name="apps_title">Apps</string>
     <string name="apps_body">Only apps you turn on can appear on the pill. With none turned on, Skerry shows nothing.</string>
     <string name="apps_search">Search apps</string>

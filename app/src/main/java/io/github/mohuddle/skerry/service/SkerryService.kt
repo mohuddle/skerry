@@ -18,6 +18,7 @@ class SkerryService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        running = this
         val manager = getSystemService(NotificationManager::class.java)
         val channel = NotificationChannel(
             CHANNEL_ID,
@@ -31,28 +32,46 @@ class SkerryService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        enterForeground(islandNotification())
-        val app = application as SkerryApp
-        app.overlay.show()
-        app.setIslandRunning(true)
+        enterForeground(islandNotification(), mediaActive)
+        (application as SkerryApp).setIslandRunning(true)
         return START_NOT_STICKY
     }
 
     override fun onDestroy() {
-        (application as SkerryApp).overlay.hide()
+        running = null
+        mediaActive = false
         (application as SkerryApp).setIslandRunning(false)
         super.onDestroy()
     }
 
-    private fun enterForeground(notification: Notification) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+    /** Adds mediaPlayback only while an allowlisted session is active. */
+    fun setMediaActive(active: Boolean) {
+        if (mediaActive == active) return
+        mediaActive = active
+        enterForeground(islandNotification(), active)
+    }
+
+    private fun enterForeground(notification: Notification, withMedia: Boolean) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(NOTIFICATION_ID, notification)
+            return
+        }
+        val type = if (withMedia) {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE or
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+        } else {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+        }
+        try {
+            startForeground(NOTIFICATION_ID, notification, type)
+        } catch (error: RuntimeException) {
+            if (!withMedia) throw error
+            mediaActive = false
             startForeground(
                 NOTIFICATION_ID,
                 notification,
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
             )
-        } else {
-            startForeground(NOTIFICATION_ID, notification)
         }
     }
 
@@ -76,8 +95,13 @@ class SkerryService : Service() {
             .build()
     }
 
-    private companion object {
-        const val CHANNEL_ID = "island"
-        const val NOTIFICATION_ID = 1
+    private var mediaActive = false
+
+    companion object {
+        var running: SkerryService? = null
+            private set
+
+        private const val CHANNEL_ID = "island"
+        private const val NOTIFICATION_ID = 1
     }
 }

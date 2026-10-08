@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <receiver
+            android:name=".debug.DebugPoster"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="io.github.mohuddle.skerry.DEBUG_POST" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

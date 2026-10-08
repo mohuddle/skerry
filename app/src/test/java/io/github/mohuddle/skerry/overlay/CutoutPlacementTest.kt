@@ -161,4 +161,30 @@ class CutoutPlacementTest {
         assertEquals(0, placement.x)
         assertEquals(10, placement.y)
     }
+
+    @Test
+    fun pushesControlsBelowAStatusBarThatCoversTheHole() {
+        // Pixel 9 Pro: 40dp content centered on the hole starts at y=36 and ends at 169,
+        // while the status bar takes touches through y=204.
+        val shift = shiftContentBelowStatusBar(
+            windowTop = 36,
+            contentHeight = 133,
+            statusBarBottom = 204,
+        )
+
+        assertEquals(168, shift.topInset)
+        assertEquals(301, shift.windowHeight)
+    }
+
+    @Test
+    fun leavesControlsAloneWhenTheyAlreadyClearTheStatusBar() {
+        val shift = shiftContentBelowStatusBar(
+            windowTop = 220,
+            contentHeight = 133,
+            statusBarBottom = 204,
+        )
+
+        assertEquals(0, shift.topInset)
+        assertEquals(133, shift.windowHeight)
+    }
 }
