@@ -2,9 +2,66 @@
 
 v1 progress for **Skerry**. Product: [DESIGN.md](DESIGN.md). Home: [README.md](README.md). Privacy: [PRIVACY.md](PRIVACY.md).
 
-**12 of 12 done.**
+**12 of 12 done.** The island redesign below is separate and not done.
 
 One task per working session so a day’s token budget stays bounded. After a task’s “Done when” is true, mark it here, refresh the README progress table, commit, and push.
+
+## Island redesign — pick up here
+
+Stopped 2026-10-08. This pickup list is on `main`. The redesign code is still only in the working tree, on top of `5bdd466` (“Finish the v1 island through the device pass.”). Commit and push that code only after the device checks below are honest. Commit as `mohuddle` / `18602380+mohuddle@users.noreply.github.com`. Do not change git config. Do not use the Mobitecture bot identity.
+
+v1 tasks 1–12 stay Done. Rows 7–9 describe the compact pill those tasks shipped. This redesign replaces that UX: hole-height capsule, side icons, and the gestures in [DESIGN.md](DESIGN.md). Do not bring back a title row on the collapsed capsule, a visible chin under it, or Accessibility.
+
+### Already in the working tree
+
+- `IslandLayout.kt`: `layoutIsland`, `capsuleWidth`, `classifyGesture`. Collapsed capsule is 32dp, centered on the hole. Expanded card starts at the status-bar bottom. `TOUCH_LIP_DP = 32` extends the window under the status bar as a clear strip.
+- `IslandSides.kt`, `DismissedKeys.kt`. Dismiss is in-memory and filtered in `reconcile`, so the next notification pass does not put a dismissed item back. `refreshPill()` starts with `dismissed.retain(presentKeys())`.
+- `ActivityStack.expand()` and `focus(key)`. `cycle()` remains for the old tests. The UI does not cycle.
+- `PillChrome.kt` and `SkerryOverlay.kt` draw the capsule, an expanded card, and a 10dp neck. The overlay does **not** call `shiftContentBelowStatusBar`.
+- Gestures: tap opens the content intent (charging is a no-op; media-only opens that app’s launcher); long-press (~380ms) expands; swipe up collapses; swipe down restores the newest dismissed key or expands; swipe sideways dismisses.
+- `DESIGN.md`, `README.md`, and the device-pass note in this file match that UX.
+- Last full `:app:testDebugUnitTest :app:assembleDebug --offline` passed **before** the slop edit. The installed APK is that build.
+
+### Proven on the Pixel with that APK (view slop still 24dp)
+
+- Charging-only collapsed frame `[536,49][745,310]`. Two icons (app left, bolt right) `[506,49][775,310]`.
+- Long-press on the clear strip expanded. Swipe up on the opaque card collapsed. Swipe sideways dismissed. A tap on the opaque card body at (280, 340) opened `MainActivity` (ActivityTaskManager result code 2, uid 10433).
+- Screenshots: `/tmp/skerry-refs/final-collapsed-top.png`, `/tmp/skerry-refs/icons-top.png`, `/tmp/skerry-refs/final-expanded-top.png`.
+
+### Not proven
+
+- Presses on the visible capsule (y≈102) belong to the status bar. A long-press at (640, 102) opened the shade.
+- A tap at (640, 260) on the clear strip opened Messages. Long-press at that point did expand. Treat clear-strip taps as unreliable.
+- Swipe down restore failed twice. Travel in the ~106px strip did not clear the ~80px slop, so the frame stayed charging-only `[536,49][745,310]`.
+- Media play/pause on the expanded card, and inline reply, were not rechecked in this pass.
+
+### Phone when this stopped
+
+Pixel 9 Pro `47101FDAP004DK`, product `caiman`, 1280×2856, cutout `Rect(586, 0 - 695, 204)`. Status bar owns `[0,0][1280,204]` (`TRUSTED_OVERLAY`, `BLOCK_UNTRUSTED`). Airplane mode is 0. `dumpsys battery reset` was run. Live battery: AC powered, USB powered false, status 4, level 100, and updates are not stopped.
+
+Skerry’s process was still up, `SkerryService` was foreground, and the listener was bound, but the overlay window was gone. Charging toggle is **on** (it was off before this work). Skerry is on the allowlist (it was not). Debug notification id 7 may still be posted; it had been dismissed in memory. Focus was Messages. Do not `pm clear`. Do not reboot. Do not force the battery exemption. Do not allowlist `com.android.shell`.
+
+### Remaining
+
+- [ ] **1. Rebuild the slop change and reinstall.** `PillChrome.kt` has `private val slop = dp(12)` (was `dp(24)`). It is not compiled or installed. Classifier tests pass slop in, so they should still pass.
+
+  `JAVA_HOME=/home/anon/.local/jdk-21 ANDROID_SDK_ROOT=/home/anon/android-sdk ./gradlew :app:testDebugUnitTest :app:assembleDebug --offline`
+
+  `adb -s 47101FDAP004DK install -r app/build/outputs/apk/debug/app-debug.apk`
+
+  `install -r` stops the process, drops Skerry-posted notifications, and clears in-memory dismiss keys. The allowlist and charging toggle survive. If the installer shows `PackageUpdateActivity`, press Home, open Skerry, and turn Island on. The Island switch’s clickable parent was near `[1027,590][1200,750]`; dump the hierarchy again before tapping. Do not start the service with `am start-foreground-service`.
+
+- [ ] **2. Prove swipe-down restore.** Post a debug notification with single-word extras: `adb -s 47101FDAP004DK shell am broadcast -a io.github.mohuddle.skerry.DEBUG_POST -n io.github.mohuddle.skerry/.debug.DebugPoster --es title Alpha --es text Bodyone --ei id 7`. Go Home. Expect a two-icon frame near `[506,49][775,310]`. Swipe sideways on the strip under the status bar, both points below y=204, about (540, 260)→(740, 260). The frame should shrink to the charging-only width. Then swipe down in that strip, travel well past ~40px, about (640, 220)→(640, 300). The frame should widen back to two icons. Count the overlay with `dumpsys input` and the `skerry,` token (a bare `skerry` match also hits `MainActivity`).
+
+- [ ] **3. If that swipe still misses, stop changing the shape.** Do not draw a chin, an egg, a dumbbell, or a mushroom. Do not add Accessibility, `TYPE_ACCESSIBILITY_OVERLAY`, or `setTrustedOverlay`. Keep the clear strip. Write down that swipe up and swipe down are reliable on the opaque card, and that restore from the collapsed strip did not land. DESIGN.md already says the status bar takes the camera row.
+
+- [ ] **4. Check play/pause on the expanded card.** With Skerry allowlisted, `adb -s 47101FDAP004DK shell am broadcast -a io.github.mohuddle.skerry.DEBUG_POST -n io.github.mohuddle.skerry/.debug.DebugPoster --es what media` toggles the debug session. Long-press the strip to expand. Tap the Play/Pause chip and confirm the session changes and the gesture listener does not take the tap. While that session is active the foreground service types include `mediaPlayback` (`0x40000002`).
+
+- [ ] **5. Put the phone back.** Turn Show charging off. Remove Skerry from the allowlist if the list should be empty again. `install -r` clears Skerry’s own notifications; cancel id 7 if a later post is still up. Leave airplane mode off. Do not `pm clear`. Leave Home only if this session opened the other app.
+
+- [ ] **6. Update GitHub.** One commit on `main`, then push to `origin`. The message names the hole-height capsule, the side icons, the five gestures, and the status-bar limit: presses on the visible capsule still go to the status bar. Record the device result in this file first. Do not claim the Play-store gesture spec is fully met.
+
+- [ ] **7. Confirm `topics/skerry.md` matches what shipped.** The v1 note that `shiftContentBelowStatusBar` pads the controls is history. This overlay does not call it.
 
 ## Board
 
@@ -200,7 +257,7 @@ Checked 2026-10-08. Airplane mode stayed on after the overlay and notification-a
 6. Airplane mode stayed on for the whole pass.
 7. Island off removed the pill and the foreground service. Island on brought them back. After reboot, Island stayed off until it was started again, and the pill came back on both devices.
 
-Pill controls are drawn below the status-bar inset. The status bar covers the camera hole, so a pill that sits entirely in that band never receives the tap.
+The island was redesigned after this pass: a hole-height capsule with side icons, and the gestures in DESIGN.md. The expanded card still starts at the bottom of the status bar, because that band belongs to the status bar.
 
 ## Session prompt
 
